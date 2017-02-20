@@ -8,7 +8,7 @@ declare namespace xf = "http://tempuri.org/HelloWorld/Transformation/sayHelloTra
 declare function xf:sayHelloTransformation($inputData1 as element(ns0:InputData))
     as element(ns1:Output) {
         <ns1:Output>
-            <ns1:Message>{ fn:concat("Hi ",$inputData1/ns0:FirstName," ",$inputData1/ns0:LastName, "From CGI") }</ns1:Message>
+            <ns1:Message>{ fn:concat("Hello ",$inputData1/ns0:FirstName," ",$inputData1/ns0:LastName, "From CGI") }</ns1:Message>
         </ns1:Output>
 };
 
