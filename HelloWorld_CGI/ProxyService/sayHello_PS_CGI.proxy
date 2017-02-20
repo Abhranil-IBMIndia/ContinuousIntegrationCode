@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-fragment xmlns:ser="http://www.bea.com/wli/sb/services" xmlns:tran="http://www.bea.com/wli/sb/transports" xmlns:env="http://www.bea.com/wli/config/env" xmlns:http="http://www.bea.com/wli/sb/transports/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con="http://www.bea.com/wli/sb/typesystem/config" xmlns:con1="http://www.bea.com/wli/sb/pipeline/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/transform/config">
+  <ser:coreEntry isProxy="true" isEnabled="true" isTracingEnabled="false">
+    <ser:binding type="Mixed" xsi:type="con:MixedBindingType" xmlns:con="http://www.bea.com/wli/sb/services/bindings/config">
+      <con:request type="XML">
+        <con4:schema ref="HelloWorld_CGI/Schemas/Input_CGI" element="InputData" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config"/>
+      </con:request>
+      <con:response type="XML">
+        <con4:schema ref="HelloWorld_CGI/Schemas/Output_CGI" element="Output" xmlns:con4="http://www.bea.com/wli/sb/typesystem/config"/>
+      </con:response>
+    </ser:binding>
+    <ser:monitoring isEnabled="false">
+      <ser:aggregationInterval>10</ser:aggregationInterval>
+      <ser:pipelineMonitoringLevel>Pipeline</ser:pipelineMonitoringLevel>
+    </ser:monitoring>
+    <ser:reporting>true</ser:reporting>
+    <ser:logging isEnabled="true">
+      <ser:logLevel>debug</ser:logLevel>
+    </ser:logging>
+    <ser:sla-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:sla-alerting>
+    <ser:pipeline-alerting isEnabled="true">
+      <ser:alertLevel>normal</ser:alertLevel>
+    </ser:pipeline-alerting>
+  </ser:coreEntry>
+  <ser:endpointConfig>
+    <tran:provider-id>http</tran:provider-id>
+    <tran:inbound>true</tran:inbound>
+    <tran:URI>
+      <env:value>/HelloWorld/ProxyService/sayHello_PS_CGI</env:value>
+    </tran:URI>
+    <tran:inbound-properties/>
+    <tran:all-headers>false</tran:all-headers>
+    <tran:provider-specific>
+      <http:inbound-properties/>
+    </tran:provider-specific>
+  </ser:endpointConfig>
+  <ser:router>
+    <con1:pipeline type="request" name="SayHelloPipelinePair_request">
+      <con1:stage name="ConcatHello">
+        <con1:context>
+          <con2:varNsDecl namespace="http://www.example.org/Input" prefix="inp"/>
+          <con2:varNsDecl namespace="http://www.example.org/Output" prefix="out"/>
+        </con1:context>
+        <con1:actions>
+          <con3:replace varName="body">
+            <con2:id>_ActionId-3396010497002502989--67db511b.159ff3195ca.-7f66</con2:id>
+            <con3:location>
+              <con2:xpathText>./*</con2:xpathText>
+            </con3:location>
+            <con3:expr>
+              <con2:xqueryTransform>
+                <con2:resource ref="HelloWorld_CGI/Transformation/sayHelloTransformation_CGI"/>
+                <con2:param name="inputData1">
+                  <con2:path>$body/inp:InputData</con2:path>
+                </con2:param>
+              </con2:xqueryTransform>
+            </con3:expr>
+          </con3:replace>
+        </con1:actions>
+      </con1:stage>
+    </con1:pipeline>
+    <con1:pipeline type="response" name="SayHelloPipelinePair_response"/>
+    <con1:flow>
+      <con1:pipeline-node name="SayHelloPipelinePair">
+        <con1:request>SayHelloPipelinePair_request</con1:request>
+        <con1:response>SayHelloPipelinePair_response</con1:response>
+      </con1:pipeline-node>
+    </con1:flow>
+  </ser:router>
+</xml-fragment>
